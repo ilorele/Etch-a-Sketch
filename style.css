@@ -6,22 +6,36 @@
     gap: 10px;
 }
 
-.grid-size-btn {
+.btn {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 20px;
     box-sizing: border-box;
     padding: 6px 24px;
-    font-size: 20px;
     background-color: hsl(318, 54%, 34%);
     color: white;
     border-radius: 6px;
     border: none;
 }
 
-.grid-size-btn:hover {
+.btn:hover {
     background-color: hsl(318, 54%, 25%);
 }
 
-.grid-size-btn:active {
+.btn:active {
     background-color: hsl(318, 54%, 34%);
+}
+
+.btn-clicked {
+    background-color: hsl(318, 54%, 25%);
+}
+
+.grid-size-btn {
+    box-sizing: border-box;
+    padding: 6px 24px;
+    background-color: hsl(318, 54%, 34%);
+    color: white;
+    border-radius: 6px;
+    border: none;
 }
 
 .grid-container {
@@ -29,16 +43,16 @@
     flex-wrap: wrap;
     height: 900px;
     width: 900px;
+    border: 2px solid black;
 }
 
 .grid-square {
-    background-color: hsl(182, 89%, 40%);
+    background-color: white;
     box-sizing: border-box;
-    border: 1px solid black;
-    transition: background-color 2s 2s;
+    /* transition: background-color 2s 2s; */
 }
 
-.grid-square:hover {
+/* .grid-square:hover {
     background-color: hsl(182, 89%, 24%);
     transition: none;
-}
+} */
