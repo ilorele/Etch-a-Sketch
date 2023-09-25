@@ -1,7 +1,9 @@
 const gridContainerEl = document.querySelector(".grid-container");
 const gridSizeBtn = document.querySelector(".grid-size-btn");
 let gridSize = 10;
+let pickedColor = "black";
 
+const pickedColorEl = document.querySelector(".picked-color");
 const randomColorBtnEl = document.querySelector(".random-color-btn");
 const shadingBtnEl = document.querySelector(".shading-btn");
 const eraserBtnEl = document.querySelector(".eraser-btn");
@@ -31,14 +33,15 @@ function getGridSize() {
     } else if (isNaN(gridSize)) {
         alert("Please enter a number!");
         getGridSize();
+        return;
     }
 
     if (gridSize < 0 || gridSize > 100) {
         alert("Grid size must be between 1 and 100!")
         getGridSize();
+        return;
     } else {
         removePreviousGrid();
-        return gridSize;
     }
 }
 
@@ -106,18 +109,20 @@ function removeClickedBtnEffect(btn) {
 
 
 gridSizeBtn.addEventListener("click", function() {
-    createGrid(getGridSize());
+    getGridSize();
+    createGrid(gridSize);
 });
 
 gridContainerEl.addEventListener("mouseover", function(event) {
     if (randomColorSwitch) {
         event.target.style.backgroundColor = getRandomColor();
+        
     } else if (eraser) {
         event.target.style.backgroundColor = "hsl(0, 0%, 100%)";
     } else if (shadingSwitch) {
         event.target.style.backgroundColor = "hsl(0, 0%, 80%)";
     } else {
-        event.target.style.backgroundColor = "black";
+        event.target.style.backgroundColor = pickedColor;
     }
 })
 
@@ -146,7 +151,7 @@ eraserBtnEl.addEventListener("click", function() {
     randomColorSwitch = false;
     eraser = true;
     addClickedBtnEffect(eraserBtnEl);
-    removeClickedBtnEffect(shadingBtnEl);
+    removeClickedBtnEffect(randomColorBtnEl);
     removeClickedBtnEffect(shadingBtnEl);
 })
 
@@ -170,4 +175,14 @@ gridLinesToggleBtnEl.addEventListener("click", function() {
 
     }
 
+})
+
+pickedColorEl.addEventListener("change", function() {
+    shadingSwitch = false;
+    randomColorSwitch = false;
+    eraser = false;
+    removeClickedBtnEffect(eraserBtnEl);
+    removeClickedBtnEffect(randomColorBtnEl);
+    removeClickedBtnEffect(shadingBtnEl);
+    pickedColor = pickedColorEl.value;
 })
