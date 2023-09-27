@@ -1,7 +1,7 @@
 const gridContainerEl = document.querySelector(".grid-container");
 const gridSizeBtn = document.querySelector(".grid-size-btn");
 let gridSize = 10;
-let pickedColor = "black";
+let pickedColor = "#C75CB3";
 
 const pickedColorEl = document.querySelector(".picked-color");
 const randomColorBtnEl = document.querySelector(".random-color-btn");
@@ -106,6 +106,85 @@ function removeClickedBtnEffect(btn) {
     btn.classList.remove("btn-clicked");
 }
 
+function getBackgroundColor(e) {
+    const colorString = e.target.style.backgroundColor;
+
+    const redSeparator = colorString.indexOf(",");
+    const red = Number(colorString.slice(4,redSeparator));
+
+    const greenSeparator = colorString.indexOf(",", redSeparator+1);
+    const green = Number(colorString.slice(redSeparator + 2, greenSeparator));
+
+    const blue = Number(colorString.slice(greenSeparator + 2, -1));
+
+    const colorArr = [red, green, blue];
+
+    return colorArr;
+    
+}
+
+function RGBToHex(ArrInRGB) {
+    const r = ArrInRGB[0] / 255;
+    const g = ArrInRGB[1] / 255;
+    const b = ArrInRGB[2] / 255;
+    
+    let cmin = Math.min(r,g,b),
+    cmax = Math.max(r,g,b),
+    delta = cmax - cmin,
+    h = 0,
+    s = 0,
+    l = 0;
+
+    if (delta == 0)
+    h = 0;
+    // Red is max
+    else if (cmax == r)
+    h = ((g - b) / delta) % 6;
+    // Green is max
+    else if (cmax == g)
+    h = (b - r) / delta + 2;
+    // Blue is max
+    else
+    h = (r - g) / delta + 4;
+
+    h = Math.round(h * 60);
+    
+    // Make negative hues positive behind 360°
+    if (h < 0)
+      h += 360;
+
+    // Calculate lightness
+    // l = (((cmax + cmin) / 2) - 0.1).toFixed(1);
+    l = ((cmax + cmin) / 2).toFixed(1);
+
+    // Calculate saturation
+    s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+    
+    // Multiply l and s by 100
+    s = +(s * 100).toFixed(1);
+    l = +(l * 100).toFixed(1);
+
+    // const colorInHSL = "hsl(" + h + "," + s + "%," + l + "%)";
+    const colorInHSLArr = [h,s,l]
+
+    return colorInHSLArr;
+}
+
+function darkenColorHSL(colorHSLArr) {
+    h = colorHSLArr[0];
+    s = colorHSLArr[1];
+    l = colorHSLArr[2] - 10;
+    const newColor = "hsl(" + h + "," + s + "%," + l + "%)";
+
+    return newColor;
+}
+
+function darkenColor(currentColorRGBArr) {
+    const currentColorHSLArr = RGBToHex(currentColorRGBArr);
+    const newColorHSLString = darkenColorHSL(currentColorHSLArr);
+
+    return newColorHSLString;
+}
 
 
 gridSizeBtn.addEventListener("click", function() {
@@ -116,11 +195,16 @@ gridSizeBtn.addEventListener("click", function() {
 gridContainerEl.addEventListener("mouseover", function(event) {
     if (randomColorSwitch) {
         event.target.style.backgroundColor = getRandomColor();
-        
     } else if (eraser) {
         event.target.style.backgroundColor = "hsl(0, 0%, 100%)";
     } else if (shadingSwitch) {
-        event.target.style.backgroundColor = "hsl(0, 0%, 80%)";
+        if (event.target.style.backgroundColor === "" ||
+            event.target.style.backgroundColor === "white"
+        ) {
+            event.target.style.backgroundColor = "rgb(255, 255, 255)";
+        }
+        const currentColorArr = getBackgroundColor(event);
+        event.target.style.backgroundColor = darkenColor(currentColorArr);
     } else {
         event.target.style.backgroundColor = pickedColor;
     }
